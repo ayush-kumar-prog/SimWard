@@ -1,0 +1,515 @@
+{
+  "id": "anaphylaxis_pacu_v1",
+  "title": "PACU Anaphylaxis Emergency",
+  "initial_state": "S0",
+  "mode_defaults": {
+    "teaching": true,
+    "exam": true
+  },
+  "checklist": [
+    {
+      "id": "adrenaline",
+      "label": "IM adrenaline given"
+    },
+    {
+      "id": "positioning",
+      "label": "Supine + legs elevated"
+    },
+    {
+      "id": "oxygen",
+      "label": "High-flow O₂"
+    },
+    {
+      "id": "fluids",
+      "label": "IV fluid bolus"
+    }
+  ],
+  "teachbacks": {
+    "why_adrenaline": {
+      "prompt": "In ≤10 words, why is IM adrenaline first-line?",
+      "rubric": [
+        "airway edema",
+        "vasodilation",
+        "shock reversal"
+      ]
+    }
+  },
+  "nodes": {
+    "S0": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 124,
+        "bp_sys": 78,
+        "bp_dia": 40,
+        "rr": 28,
+        "spo2": 88
+      },
+      "evidence": [
+        "evidence/wrist_hives_s0.png"
+      ],
+      "choices": [
+        {
+          "id": "adrenaline_im",
+          "label": "IM Adrenaline 0.5 mg (1:1000)",
+          "next": "S1_GOOD",
+          "delta": {
+            "bp_sys": "+14",
+            "bp_dia": "+18",
+            "spo2": "+4",
+            "rr": "-2"
+          },
+          "ticks": [
+            "adrenaline"
+          ],
+          "ask_uncertainty": true,
+          "teachback_id": "why_adrenaline",
+          "caption_key": "why_adrenaline_first",
+          "voice_aliases": [
+            "give intramuscular adrenaline",
+            "adrenaline point five milligrams",
+            "IM epi",
+            "intramuscular epinephrine",
+            "give epi point five"
+          ]
+        },
+        {
+          "id": "airway_oxygen",
+          "label": "Airway maneuvers + High-flow O₂",
+          "next": "S1_SUPPORT",
+          "delta": {
+            "spo2": "+3"
+          },
+          "ticks": [
+            "oxygen"
+          ],
+          "caption_key": "supportive_only_limits",
+          "voice_aliases": [
+            "start oxygen",
+            "apply high flow oxygen",
+            "airway and oxygen",
+            "give oxygen"
+          ]
+        },
+        {
+          "id": "iv_fluids",
+          "label": "500 mL IV bolus",
+          "next": "S1_DELAY",
+          "delta": {
+            "bp_sys": "+6"
+          },
+          "ticks": [
+            "fluids"
+          ],
+          "caption_key": "fluids_help_not_primary",
+          "voice_aliases": [
+            "give five hundred mils fluids",
+            "start iv bolus",
+            "iv fluids",
+            "fluid bolus"
+          ]
+        }
+      ],
+      "time_limit_sec": 30,
+      "timeout_next": "S0_TIMEOUT"
+    },
+    "S1_GOOD": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 110,
+        "bp_sys": 92,
+        "bp_dia": 58,
+        "rr": 26,
+        "spo2": 92
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "airway_oxygen",
+          "label": "High-flow O₂",
+          "next": "S2_BETTER",
+          "delta": {
+            "spo2": "+3"
+          },
+          "ticks": [
+            "oxygen"
+          ],
+          "voice_aliases": [
+            "start oxygen",
+            "high flow oxygen"
+          ]
+        },
+        {
+          "id": "iv_fluids",
+          "label": "500 mL IV bolus",
+          "next": "S2_STABLE",
+          "delta": {
+            "bp_sys": "+8"
+          },
+          "ticks": [
+            "fluids"
+          ],
+          "voice_aliases": [
+            "iv bolus",
+            "give fluids"
+          ]
+        },
+        {
+          "id": "positioning",
+          "label": "Supine + legs elevated",
+          "next": "S2_STABLE",
+          "ticks": [
+            "positioning"
+          ],
+          "voice_aliases": [
+            "position supine",
+            "elevate legs",
+            "supine positioning"
+          ]
+        }
+      ],
+      "time_limit_sec": 45,
+      "timeout_next": "S1_TIMEOUT"
+    },
+    "S1_SUPPORT": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 126,
+        "bp_sys": 76,
+        "bp_dia": 38,
+        "rr": 30,
+        "spo2": 91
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "adrenaline_im",
+          "label": "IM Adrenaline 0.5 mg (1:1000)",
+          "next": "S2_RECOVER",
+          "delta": {
+            "bp_sys": "+18",
+            "bp_dia": "+16",
+            "hr": "-8",
+            "spo2": "+5"
+          },
+          "ticks": [
+            "adrenaline"
+          ],
+          "voice_aliases": [
+            "give adrenaline",
+            "IM epi"
+          ]
+        },
+        {
+          "id": "iv_fluids",
+          "label": "500 mL IV bolus",
+          "next": "S1_SUPPORT_DELAY",
+          "delta": {
+            "bp_sys": "+8"
+          },
+          "ticks": [
+            "fluids"
+          ],
+          "voice_aliases": [
+            "iv fluids",
+            "fluid bolus"
+          ]
+        }
+      ],
+      "time_limit_sec": 30,
+      "timeout_next": "S1_TIMEOUT"
+    },
+    "S1_DELAY": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 128,
+        "bp_sys": 84,
+        "bp_dia": 42,
+        "rr": 28,
+        "spo2": 88
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "adrenaline_im",
+          "label": "IM Adrenaline 0.5 mg (1:1000)",
+          "next": "S2_RECOVER",
+          "delta": {
+            "bp_sys": "+12",
+            "bp_dia": "+14",
+            "hr": "-10",
+            "spo2": "+6"
+          },
+          "ticks": [
+            "adrenaline"
+          ],
+          "voice_aliases": [
+            "give adrenaline",
+            "IM epi"
+          ]
+        }
+      ],
+      "time_limit_sec": 30,
+      "timeout_next": "S1_TIMEOUT"
+    },
+    "S1_SUPPORT_DELAY": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 124,
+        "bp_sys": 84,
+        "bp_dia": 44,
+        "rr": 28,
+        "spo2": 91
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "adrenaline_im",
+          "label": "IM Adrenaline 0.5 mg (1:1000)",
+          "next": "END_DELAYED",
+          "delta": {
+            "bp_sys": "+14",
+            "bp_dia": "+12",
+            "hr": "-8"
+          },
+          "ticks": [
+            "adrenaline"
+          ],
+          "voice_aliases": [
+            "give adrenaline"
+          ]
+        }
+      ],
+      "time_limit_sec": 30,
+      "timeout_next": "S1_TIMEOUT"
+    },
+    "S2_BETTER": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 104,
+        "bp_sys": 98,
+        "bp_dia": 62,
+        "rr": 22,
+        "spo2": 95
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "positioning",
+          "label": "Supine + legs elevated",
+          "next": "END_EXCELLENT",
+          "ticks": [
+            "positioning"
+          ],
+          "voice_aliases": [
+            "position supine",
+            "elevate legs"
+          ]
+        },
+        {
+          "id": "continue_monitoring",
+          "label": "Continue monitoring",
+          "next": "END_GOOD",
+          "voice_aliases": [
+            "continue monitoring",
+            "keep monitoring"
+          ]
+        }
+      ],
+      "time_limit_sec": 60
+    },
+    "S2_STABLE": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 106,
+        "bp_sys": 100,
+        "bp_dia": 64,
+        "rr": 24,
+        "spo2": 94
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "continue_monitoring",
+          "label": "Continue monitoring",
+          "next": "END_GOOD",
+          "voice_aliases": [
+            "continue monitoring",
+            "keep monitoring"
+          ]
+        }
+      ],
+      "time_limit_sec": 60
+    },
+    "S2_RECOVER": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 108,
+        "bp_sys": 94,
+        "bp_dia": 58,
+        "rr": 24,
+        "spo2": 93
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "continue_monitoring",
+          "label": "Continue monitoring",
+          "next": "END_OK",
+          "voice_aliases": [
+            "continue monitoring"
+          ]
+        }
+      ],
+      "time_limit_sec": 60
+    },
+    "S0_TIMEOUT": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 134,
+        "bp_sys": 64,
+        "bp_dia": 32,
+        "rr": 34,
+        "spo2": 82
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "adrenaline_im",
+          "label": "IM Adrenaline 0.5 mg (1:1000) - NOW!",
+          "next": "END_CRITICAL",
+          "ticks": [
+            "adrenaline"
+          ],
+          "voice_aliases": [
+            "give adrenaline",
+            "adrenaline now"
+          ]
+        }
+      ],
+      "time_limit_sec": 15,
+      "timeout_next": "END_FAILED"
+    },
+    "S1_TIMEOUT": {
+      "scene": "bg/pacu_day.png",
+      "video": null,
+      "vitals": {
+        "hr": 138,
+        "bp_sys": 68,
+        "bp_dia": 34,
+        "rr": 32,
+        "spo2": 84
+      },
+      "evidence": [],
+      "choices": [
+        {
+          "id": "adrenaline_im",
+          "label": "IM Adrenaline 0.5 mg (1:1000)",
+          "next": "END_CRITICAL",
+          "ticks": [
+            "adrenaline"
+          ],
+          "voice_aliases": [
+            "give adrenaline"
+          ]
+        }
+      ],
+      "time_limit_sec": 15,
+      "timeout_next": "END_FAILED"
+    }
+  },
+  "end_states": {
+    "END_EXCELLENT": {
+      "outcome": "Excellent management - patient stabilized rapidly with complete care"
+    },
+    "END_GOOD": {
+      "outcome": "Good management - patient stabilized promptly"
+    },
+    "END_OK": {
+      "outcome": "Acceptable management - patient stabilized with some delay"
+    },
+    "END_DELAYED": {
+      "outcome": "Delayed definitive treatment - patient recovered but with suboptimal timing"
+    },
+    "END_CRITICAL": {
+      "outcome": "Critical delay - patient deteriorated before treatment"
+    },
+    "END_FAILED": {
+      "outcome": "Treatment failure - severe patient deterioration"
+    }
+  },
+  "captions": {
+    "why_adrenaline_first": "IM adrenaline reverses airway edema & vasodilation; reassess in 2–5 min.",
+    "supportive_only_limits": "O₂ supports saturation but doesn't halt the reaction. Adrenaline is first-line.",
+    "fluids_help_not_primary": "Fluids counteract vasodilation but adrenaline is first-line for anaphylaxis."
+  },
+  "scoring": {
+    "weights": {
+      "timing": 40,
+      "correctness": 40,
+      "completeness": 20,
+      "calibration": 0
+    },
+    "timers": {
+      "adrenaline_im": {
+        "<=30": 20,
+        "<=60": 15,
+        ">60": 5
+      }
+    },
+    "correct": {
+      "S0": [
+        "adrenaline_im"
+      ],
+      "S1_GOOD": [
+        "airway_oxygen",
+        "iv_fluids",
+        "positioning"
+      ],
+      "S1_SUPPORT": [
+        "adrenaline_im"
+      ],
+      "S1_DELAY": [
+        "adrenaline_im"
+      ],
+      "S1_SUPPORT_DELAY": [
+        "adrenaline_im"
+      ],
+      "S2_BETTER": [
+        "positioning",
+        "continue_monitoring"
+      ],
+      "S2_STABLE": [
+        "continue_monitoring"
+      ],
+      "S2_RECOVER": [
+        "continue_monitoring"
+      ],
+      "S0_TIMEOUT": [
+        "adrenaline_im"
+      ],
+      "S1_TIMEOUT": [
+        "adrenaline_im"
+      ]
+    },
+    "completeness": {
+      "checklist": {
+        "adrenaline": 6,
+        "positioning": 4,
+        "oxygen": 4,
+        "fluids": 2
+      },
+      "teachback_pass": 6,
+      "hint_penalty": -3
+    }
+  }
+}
+

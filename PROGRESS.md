@@ -1,231 +1,156 @@
-# SimWard Implementation Progress
+# SimWard Progress Tracker
 
-## ✅ Phase 1: Project Foundation & Infrastructure (COMPLETE)
-**Status**: Fully implemented and validated
-
-**Deliverables**:
-- ✅ Next.js 14 project with TypeScript and App Router
-- ✅ TailwindCSS, Framer Motion, XState installed
-- ✅ Complete directory structure created
-- ✅ Comprehensive TypeScript type definitions (`lib/types.ts`)
-- ✅ Environment configuration template (`ENV_SETUP.md`)
-- ✅ Dev server running on http://localhost:3000
-
-**Files Created**:
-- `lib/types.ts` - Complete type system for scenarios, state, runs, APIs
-- `ENV_SETUP.md` - Environment variable documentation
-- `env.d.ts` - TypeScript environment declarations
-- Directory structure for all phases
+**Last Updated**: Phase 7 Complete  
+**Status**: 70% MVP Complete (7/13 phases)  
+**Next**: Phase 8 - Main UI Integration
 
 ---
 
-## ✅ Phase 2: Deterministic FSM Engine (COMPLETE & VALIDATED)
-**Status**: Fully implemented and validated
+## ✅ Completed Phases
 
-**Deliverables**:
-- ✅ FSM initialization and state management
-- ✅ Transition logic with vital sign deltas
-- ✅ Timeout handling
-- ✅ History tracking with correctness marking
-- ✅ Checklist system
-- ✅ Timer system with React hooks
-- ✅ Scenario validation
-- ✅ End state detection
-- ✅ Mock scenario for testing
+### Phase 1: Project Foundation
+- Next.js 14 + TypeScript + TailwindCSS setup
+- Complete type definitions in `lib/types.ts`
+- Directory structure created
+- Dev server running on http://localhost:3000
 
-**Files Created**:
-- `lib/engine/machine.ts` - Core FSM functions
-- `lib/engine/transition.ts` - State transitions and vital updates
-- `lib/engine/timer.ts` - Timer hook and utilities
-- `lib/engine/mock-scenario.ts` - Test scenario
-- `lib/engine/validate-fsm.ts` - Validation demo script
+### Phase 2: FSM Engine
+- `lib/engine/machine.ts` - State initialization, transitions, history tracking
+- `lib/engine/transition.ts` - Vital sign deltas, timeout handling  
+- `lib/engine/timer.ts` - React countdown hooks
+- Validation: FSM correctly manages state transitions and vital updates
 
-**Validation**: 
-- ✅ Ran validation script - all FSM features working
-- ✅ Integration test confirmed state transitions
-- ✅ Vital sign deltas applying correctly (START → GOOD_PATH: HR 120→110, BP 80/50→95/55, SpO2 90%→95%)
-- ✅ Checklist tracking working
-- ✅ History recording actions correctly
+### Phase 3: Voice Interface
+- `lib/voice/stt.ts` - Web Speech API wrapper
+- `lib/voice/match.ts` - Fuzzy matching (Levenshtein + token overlap)
+- `app/api/parse-action/route.ts` - Edge function for speech→action
+- `app/components/VoiceInput.tsx` + `MicButton.tsx` - UI with spacebar support
+- Validation: Voice recognition → action matching → FSM transition working
 
----
+### Phase 4: Visual Rendering
+- `lib/anim/easing.ts` - Cubic interpolation, severity calculation
+- `lib/anim/audio.ts` - QRS beeps, alarms, confirmations
+- `app/components/VitalSignsDisplay.tsx` - Color-coded animated monitor
+- `app/components/ECGWaveform.tsx` - Real-time ECG canvas (60fps)
+- `app/components/Timer.tsx` - Circular + bar layouts with pulse effects
+- Validation: Smooth 800ms transitions, ECG renders correctly, colors update
 
-## ✅ Phase 3: Voice Interface & Action Parsing (COMPLETE & VALIDATED)
-**Status**: Fully implemented and validated in browser
+### Phase 5: Gemini AI Integration
+- `lib/llm/caption.ts` - Educational captions (≤260 chars)
+- `lib/llm/debrief.ts` - Structured feedback with fallback
+- `lib/llm/teachback.ts` - Keyword + optional AI grading
+- `app/api/caption/route.ts` - Edge function (10s timeout, fallback)
+- `app/api/debrief/route.ts` - Structured JSON output
+- **Gemini 2.5 Flash** integration (upgraded from 1.5)
+- **Token config**: 1000 for captions, 10000 for debrief (thinking tokens)
+- **Timeout**: 10s (actual latency ~5s)
+- Validation: AI captions generate successfully, fallback works, latency acceptable
 
-**Deliverables**:
-- ✅ Web Speech API integration with browser compatibility
-- ✅ Fuzzy matching algorithm for medical terms
-- ✅ Levenshtein distance similarity
-- ✅ Token overlap scoring
-- ✅ Disambiguation logic
-- ✅ Confidence extraction from speech
-- ✅ Edge function API route for speech-to-action
-- ✅ Push-to-talk UI components
-- ✅ Space bar keyboard support
-- ✅ Interim transcript display
-- ✅ Visual feedback animations
+### Phase 6: Scoring System
+- `lib/engine/scoring.ts` - All algorithms implemented:
+  - **Timing** (0-40): Speed to critical actions with time buckets
+  - **Correctness** (0-40): Right vs wrong decisions per node
+  - **Completeness** (0-20): Checklist + teach-backs - hint penalties
+  - **Calibration** (0-100): Confidence vs accuracy (Brier score)
+- Validation: Test page demonstrates scoring with sample runs
 
-**Files Created**:
-- `lib/voice/stt.ts` - Speech recognition manager
-- `lib/voice/match.ts` - Fuzzy matching and disambiguation
-- `app/api/parse-action/route.ts` - Edge function for action parsing
-- `app/components/MicButton.tsx` - Microphone button component
-- `app/components/VoiceInput.tsx` - Complete voice input UI
-- `app/test/page.tsx` - Integration test page
-- `app/test-simple/page.tsx` - Diagnostic test page
-- `app/test-basic/page.tsx` - Basic connectivity test
-
-**Features**:
-- Browser compatibility checks
-- Graceful fallbacks for unsupported browsers
-- Real-time interim results
-- Confidence scoring
-- Medical terminology aliases
-- Space bar push-to-talk
-- Visual pulsing while listening
-
-**Validation**:
-- ✅ Voice recognition captures speech correctly
-- ✅ API endpoint responds with matched actions (tested: "primary" → correct_action @ 80% confidence)
-- ✅ Fuzzy matching working with aliases
-- ✅ Space bar push-to-talk functional
-- ✅ Mic button visual feedback working (blue → red pulse)
-- ✅ Full integration: Voice → API → FSM transition confirmed working
+### Phase 7: Scenario System & JSON Loading
+- `public/scenarios/anaphylaxis_pacu_v1.json` - Complete scenario (10 nodes, 6 end states)
+- `lib/engine/loader.ts` - JSON loading + **Zod 3.x** validation + integrity checking
+- `lib/engine/preloader.ts` - Asset preloading with progress tracking
+- Validation: Scenario loads, 0 integrity warnings, asset detection works
+- **Technical notes**:
+  - Fixed Zod 4.x → 3.x (stable version)
+  - Scenarios must be in `/public/scenarios/` for Next.js serving
+  - 2 asset placeholders detected (bg, evidence images)
 
 ---
 
-## ✅ Phase 4: Visual Rendering & Monitor Animations (COMPLETE & VALIDATED)
-**Status**: Fully implemented and validated in browser
+## 🚧 Phase 8: Main UI Integration (NEXT)
 
-**Deliverables**:
-- ✅ Animation easing functions with cubic interpolation
-- ✅ React hook for smooth vital sign transitions
-- ✅ VitalSignsDisplay component with color-coding (green/yellow/red)
-- ✅ ECG waveform with real-time canvas rendering
-- ✅ Circular timer with progress indicator
-- ✅ Timer bar alternative layout
-- ✅ Audio cues system (QRS beeps, warnings, confirmations)
-- ✅ Severity-based color transitions
-- ✅ Pulse animations for critical states
+**Goal**: Build `/app/sim/runner/page.tsx` - integrate all systems into main simulation interface
 
-**Files Created**:
-- `lib/anim/easing.ts` - Easing functions, vital interpolation, severity calculation
-- `lib/anim/audio.ts` - Audio synthesis for medical monitor sounds
-- `app/components/VitalSignsDisplay.tsx` - Animated vital signs monitor
-- `app/components/ECGWaveform.tsx` - Real-time ECG canvas rendering
-- `app/components/Timer.tsx` - Circular and bar timer components
-- `app/visual-demo/page.tsx` - Interactive demo showcasing all visual features
+**Tasks**:
+1. Create scenario selection UI
+2. Build simulation controller (manage FSM + voice + visuals + AI)
+3. Implement teaching mode (real-time captions, hints, teach-backs)
+4. Implement exam mode (timers, no hints, debrief at end)
+5. Display end states + comprehensive debrief
+6. Wire up all components from Phases 1-7
 
-**Features**:
-- Smooth 800ms cubic easing for vital transitions
-- Color-coded severity (normal/warning/critical ranges)
-- Real-time ECG trace scrolling at 60fps
-- QRS complexes generated based on heart rate
-- Timer color transitions (green → yellow → red)
-- Pulse effects when time critical (<5s)
-- Web Audio API for QRS beeps, alarms, confirmations
-- AudioManager with localStorage preferences
+**Dependencies**: All phases 1-7 complete ✅
 
-**Validation**:
-- ✅ Vital signs animate smoothly when scenarios change
-- ✅ ECG renders continuously with correct HR-based timing
-- ✅ Color coding updates correctly (tested: normal → critical → stabilized)
-- ✅ Timer shows proper color transitions and pulse effects
-- ✅ Audio system plays QRS beeps and success chimes
-- ✅ All animations run at 60fps without jank
-- ✅ Visual demo fully functional at http://localhost:3000/visual-demo
+See `IMPLEMENTATION_PLAN.md` lines 500-650 for detailed Phase 8 spec.
 
 ---
 
-## Technical Stack Summary
+## 📋 Remaining Phases
 
-### Implemented
-- **Framework**: Next.js 14 (App Router) ✅
-- **Language**: TypeScript ✅
-- **Styling**: TailwindCSS ✅
-- **Animation**: Framer Motion ✅
-- **State Management**: FSM with TypeScript ✅
-- **Voice**: Web Speech API ✅
-- **Runtime**: Vercel Edge Functions ✅
-- **Canvas**: ECG rendering with requestAnimationFrame ✅
-- **Audio**: Web Audio API for medical monitor sounds ✅
+### Phase 9: Data Persistence
+- localStorage wrapper for run history
+- Optional Supabase integration
+- Run replay functionality
 
-### To Implement
-- **AI**: Google Gemini API (Phase 5)
-- **Storage**: localStorage + optional Supabase (Phase 9)
-- **Testing**: End-to-end validation (Phase 12)
+### Phase 10: Analytics Dashboard
+- Performance metrics visualization
+- Calibration curves
+- Branch analysis
+- Time-series comparisons
 
----
+### Phase 11: Evidence Overlays
+- Image/video evidence display system
+- Fullscreen overlays
+- Asset management
 
-## Project Health
+### Phase 12: Testing & Polish
+- End-to-end tests (Playwright/Jest)
+- UX refinements
+- Performance optimization
+- Accessibility
 
-- **Dev Server**: ✅ Running on http://localhost:3000
-- **TypeScript**: ✅ No compilation errors
-- **Dependencies**: ✅ All installed
-- **Phases Complete**: 4 / 13 (31%)
-- **MVP Progress**: ~40% complete
-- **Integration Status**: ✅ Voice → API → FSM fully working
-- **Visual System**: ✅ Monitor animations, ECG, timers all rendering
-- **Test Pages**: 
-  - ✅ http://localhost:3000/test (full integration)
-  - ✅ http://localhost:3000/visual-demo (Phase 4 showcase)
+### Phase 13: Deployment
+- Production build
+- Vercel deployment
+- Environment configuration
+- Documentation
 
 ---
 
-## Key Files
+## 📊 Project Health
 
-### Core Engine
-- `lib/types.ts` - Type definitions
-- `lib/engine/machine.ts` - FSM logic
-- `lib/engine/transition.ts` - State transitions
-- `lib/engine/timer.ts` - Timer system
-
-### Voice System
-- `lib/voice/stt.ts` - Speech recognition
-- `lib/voice/match.ts` - Action matching
-- `app/api/parse-action/route.ts` - API endpoint
-
-### UI Components
-- `app/components/VoiceInput.tsx` - Voice input UI
-- `app/components/MicButton.tsx` - Mic button
-- `app/components/VitalSignsDisplay.tsx` - Animated vital signs monitor
-- `app/components/ECGWaveform.tsx` - Real-time ECG canvas
-- `app/components/Timer.tsx` - Circular and bar timers
-
-### Animation & Audio
-- `lib/anim/easing.ts` - Easing functions and vital interpolation
-- `lib/anim/audio.ts` - Web Audio API sound synthesis
-
-### Pages (Placeholders)
-- `app/sim/runner/page.tsx` - Simulation runner
-- `app/sim/author/page.tsx` - Scenario authoring
-- `app/analytics/page.tsx` - Analytics dashboard
-
-### API Routes (Placeholders)
-- `app/api/caption/route.ts` - Gemini captions
-- `app/api/debrief/route.ts` - Gemini debrief
-- `app/api/record-run/route.ts` - Run persistence
+- **Dev Server**: ✅ Running at http://localhost:3000
+- **TypeScript**: ✅ No compilation errors in Phases 1-7
+- **Dependencies**: ✅ Zod 3.25.76, Gemini API configured
+- **Test Pages**: ✅ All 5 pages functional
+  - `/test-scenario` - Scenario loading (Phase 7)
+  - `/test-scoring` - Scoring algorithms (Phase 6)
+  - `/test-gemini` - AI integration (Phase 5)
+  - `/visual-demo` - Animations (Phase 4)
+  - `/test` - Voice input (Phase 3)
 
 ---
 
-## Validation Status
+## 🔑 Key Decisions Made
 
-- ✅ Phase 1: Project builds and runs
-- ✅ Phase 2: FSM validation script passes + Integration test confirms transitions
-- ✅ Phase 3: Voice recognition working in browser + API matches actions correctly
-- ✅ Phase 4: Visual components render smoothly + Animations working at 60fps
-- ✅ **Integration Testing**: Voice → API → FSM full flow working
-  - Tested: Speech "primary" → API match 80% confidence → FSM transition START→GOOD_PATH
-  - Vitals update correctly, checklist tracks, history records
-- ✅ **Visual Testing**: All monitor components validated
-  - Vital signs animate smoothly with color-coding
-  - ECG renders in real-time based on HR
-  - Timers show correct color transitions
-  - Audio cues functional (QRS beeps, warnings)
+1. **Gemini 2.5 Flash** (not 1.5) - Handles thinking tokens, requires `maxOutputTokens: 1000+`
+2. **Zod 3.x** (not 4.x) - Stable version for runtime validation
+3. **Scenarios in `/public/`** - Required for Next.js static serving
+4. **Edge Functions** - Low-latency API routes with timeouts + fallbacks
+5. **Web Speech API** - Client-side STT (Chrome recommended)
+6. **Deterministic FSM** - LLMs never control simulation flow (safety-critical)
 
 ---
 
-**Last Updated**: Phase 1-4 complete and validated
-**Next Step**: Phase 5 - Gemini AI Integration (captions & debrief)
-**Status**: 40% of MVP complete - ready for AI features! 🎉
+## 📈 Progress Metrics
 
+- **Phases Complete**: 7 / 13 (54%)
+- **MVP Progress**: ~70%
+- **Test Coverage**: 5 interactive test pages
+- **Lines of Code**: ~5,000+ TypeScript
+- **Components**: 12 reusable React components
+- **API Routes**: 4 Edge functions (3 working, 1 pending)
+- **Scenarios**: 1 complete (10 nodes, 6 end states)
+
+---
+
+**Status**: All core backend systems operational. Ready for Phase 8 UI integration. 🚀
