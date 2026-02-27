@@ -1,8 +1,8 @@
 # SimWard Progress Tracker
 
-**Last Updated**: Phase 7 Complete  
-**Status**: 70% MVP Complete (7/13 phases)  
-**Next**: Phase 8 - Main UI Integration
+**Last Updated**: Phase 8 Complete  
+**Status**: 80% MVP Complete (8/13 phases)  
+**Next**: Phase 9 - Data Persistence
 
 ---
 
@@ -64,23 +64,57 @@
   - Scenarios must be in `/public/scenarios/` for Next.js serving
   - 2 asset placeholders detected (bg, evidence images)
 
+### Phase 8: Main UI Integration
+- `app/sim/runner/page.tsx` - **Complete simulation runner** (1000+ lines)
+  - Scenario & mode selection UI
+  - FSM integration with real-time state updates
+  - Voice interaction flow with action confirmation
+  - Teaching Mode: real-time captions, confidence prompts, teach-backs
+  - Exam Mode: silent recording, no hints, strict timers
+  - End-of-run debrief with Gemini AI feedback
+  - Timer management with automatic timeout handling
+  - Evidence image overlays
+  - Action history display
+  - Checklist tracking (Teaching Mode)
+- `app/analytics/page.tsx` - **Analytics dashboard**
+  - Performance metrics cards (total runs, pass rate, median time, calibration)
+  - Run history table with filtering (scenario, mode)
+  - Top mistakes analysis
+  - Run deletion & bulk clear
+- `app/sim/author/page.tsx` - **Scenario authoring tool**
+  - Import/export JSON scenarios
+  - Metadata editor (ID, title, initial state)
+  - Node editor (add/delete nodes, configure vitals, time limits)
+  - Choice editor (add/remove actions)
+  - Scoring configuration
+  - Real-time validation with integrity checks
+  - JSON preview & download
+- `lib/storage/store.ts` - **LocalStorage run persistence** (basic implementation)
+  - LocalRunStore class with full CRUD operations
+  - Browser localStorage sync
+  - Filtering by scenario and mode
+  - Global singleton instance
+- Validation: All pages functional, no TypeScript errors
+- **Integration**: All Phases 1-7 systems now connected in working UI
+
 ---
 
-## 🚧 Phase 8: Main UI Integration (NEXT)
+## 🚧 Phase 9: Data Persistence (NEXT)
 
-**Goal**: Build `/app/sim/runner/page.tsx` - integrate all systems into main simulation interface
+**Goal**: Enhance storage system and add run persistence to API
 
 **Tasks**:
-1. Create scenario selection UI
-2. Build simulation controller (manage FSM + voice + visuals + AI)
-3. Implement teaching mode (real-time captions, hints, teach-backs)
-4. Implement exam mode (timers, no hints, debrief at end)
-5. Display end states + comprehensive debrief
-6. Wire up all components from Phases 1-7
+1. Implement run persistence API (`/api/record-run`)
+2. Optional: Add Supabase integration for cloud storage
+3. Add run replay functionality
+4. Enhance analytics with historical data
+5. Add export functionality (CSV/JSON)
 
-**Dependencies**: All phases 1-7 complete ✅
+**Dependencies**: Phase 8 complete ✅
 
-See `IMPLEMENTATION_PLAN.md` lines 500-650 for detailed Phase 8 spec.
+**Note**: Basic LocalStorage implementation already done in Phase 8. This phase will add API persistence and optional cloud storage.
+
+See `IMPLEMENTATION_PLAN.md` lines 520-583 for detailed Phase 9 spec.
 
 ---
 
@@ -143,14 +177,15 @@ See `IMPLEMENTATION_PLAN.md` lines 500-650 for detailed Phase 8 spec.
 
 ## 📈 Progress Metrics
 
-- **Phases Complete**: 7 / 13 (54%)
-- **MVP Progress**: ~70%
-- **Test Coverage**: 5 interactive test pages
-- **Lines of Code**: ~5,000+ TypeScript
-- **Components**: 12 reusable React components
-- **API Routes**: 4 Edge functions (3 working, 1 pending)
+- **Phases Complete**: 8 / 13 (62%)
+- **MVP Progress**: ~80%
+- **Test Coverage**: 5 interactive test pages + 3 main UI pages
+- **Lines of Code**: ~8,000+ TypeScript
+- **Components**: 12+ reusable React components
+- **API Routes**: 4 Edge functions (3 working with AI, 1 pending)
 - **Scenarios**: 1 complete (10 nodes, 6 end states)
+- **Pages**: Runner, Analytics, Author all functional
 
 ---
 
-**Status**: All core backend systems operational. Ready for Phase 8 UI integration. 🚀
+**Status**: Main UI complete! Full simulation flow operational with voice, FSM, AI, and analytics. Ready for Phase 9 data persistence enhancements. 🚀
